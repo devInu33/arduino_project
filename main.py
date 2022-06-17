@@ -1,5 +1,6 @@
 import io
 import socket
+import struct
 import time
 
 import numpy as np
@@ -34,37 +35,16 @@ while True:
         data = conn.recv(4096)
         if not data or data == b'tx_complete':
             break
-        elif shape is None:
-            shape_string += data.decode("utf-8")
-            # Find the end of the line.  An index other than -1 will be returned if the end has been found because
-            # it has been received
-            if shape_string.find('\r\n') != -1:
-                width_index = shape_string.find('width:')
-                height_index = shape_string.find('height:')
-                width = int(shape_string[width_index + len('width:'): height_index])
-                height = int(shape_string[height_index + len('height:'): ])
-                shape = (width, height)
-            print("shape is {}".format(shape))
-        else:
-            chunks_received += 1
-            # print(chunks_received)
-            array_from_client.extend(data)
-            # print(array_from_client)
-        conn.sendall(b'ack')
-        # print("sent acknowledgement")
+        chunks_received += 1
+        array_from_client.extend(data)
+        # print(array_from_client)
+        # conn.sendall(b'ack')
     #     TODO: need to check if sending acknowledgement of the number of chunks and the total length of the array is a good idea
     print("chunks_received {}. Number of bytes {}".format(chunks_received, len(array_from_client)))
     img: Image.Image = create_image_from_bytes(array_from_client)
-    if test(img):
-        conn.send()
-
-
-
+    val = struct.pack("!i", test(img))
+    conn.send(val)
     array_start_time = time.time()
-    image_array = np.array(img)
-
-
-    conn.send
     print('array conversion took {} s'.format(time.time() - array_start_time))
     conn.close()
     print('client disconnected')
