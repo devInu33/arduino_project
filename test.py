@@ -1,10 +1,9 @@
 import cv2
 import numpy as np
-
+from PIL import Image
 
 def test(img):
-
-
+    # img = cv2.imread(file)
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     lower_bound = np.array([10, 20, 20])
     upper_bound = np.array([30, 255, 255])
