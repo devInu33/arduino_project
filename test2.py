@@ -1,10 +1,12 @@
+import io
+
 import cv2
 import numpy as np
 from PIL import Image
 
-img = cv2.imread("사진1.jpeg")
+# img = cv2.imread("예시5.jpg")
 hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-lower_bound = np.array([10, 20, 20])
+lower_bound = np.array([20, 20, 20])
 upper_bound = np.array([30, 255, 255])
 mask = cv2.inRange(hsv, lower_bound, upper_bound)
 kernel = np.ones((7, 7), np.uint8)
